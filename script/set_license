@@ -3,10 +3,13 @@
 set -e
 
 # Variables
-TARGET_DIR=$(cd $(dirname $0);pwd | xargs dirname)/license_template
+TARGET_DIR=$(
+    cd $(dirname $0)
+    pwd | xargs dirname
+)/license_template
 
 # Choose license
-ls $TARGET_DIR;
+ls $TARGET_DIR
 read -p "please choose your license type from the above: " LICENSEFILE
 TARGET_FILE=$TARGET_DIR/$LICENSEFILE.txt
 
@@ -18,11 +21,15 @@ fi
 # Write license
 read -p "Are you sure to newly write $LICENSEFILE LICENSE? (y/N): " yn
 case "$yn" in
-    [yY]*) 
-        read -p "From what year your license is valid (yyyy): " YEAR;
-        read -p "Who is copyright owner: " OWNER;
-        cat $TARGET_FILE | sed -r -e "s/\{\{ year \}\}/$YEAR/" -e "s/\{\{ copyright-owner \}\}/$OWNER/"  >./LICENSE ;;
-    *) echo "abort";;
+[yY]*)
+    read -p "From what year your license is valid (yyyy): " YEAR
+    read -p "Who is copyright owner: " OWNER
+    read -p "What is the program name (only in GPL 3.0): " PROGRAMNAME
+    cat $TARGET_FILE | sed -r -e "s/\{\{ year \}\}/$YEAR/" \
+        -e "s/\{\{ program-name \}\}/$PROGRAMNAME/" \
+        -e "s/\{\{ copyright-owner \}\}/$OWNER/" >./LICENSE
+    ;;
+*) echo "abort" ;;
 esac
 
 exit 0
