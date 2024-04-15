@@ -16,3 +16,8 @@ Are you sure to newly write MIT LICENSE? (y/N): y
 From what year your license is valid (yyyy): 2024 
 Who is copyright owner: Ryo Nakagami
 ```
+
+
+References
+----------
+- [spdx/license-list-data](https://github.com/spdx/license-list-data/tree/main)
