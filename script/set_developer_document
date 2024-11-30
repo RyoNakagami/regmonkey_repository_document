@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -eu
+
+# color
+reset=$'\e[0m'
+cyan=$'\e[36m'
+red=$'\e[31m'
+
+# global variables
+TEMPLATE_SORCE_DIR=$(
+    cd $(dirname $0)
+    pwd | xargs dirname
+)/document_template
+
+# parse arguments
+while getopts "d:p:" opt; do
+    case $opt in
+    d) TARGET_DIR=$OPTARG ;;
+    p) PROJECT_NAME=$OPTARG ;;
+    *)
+        echo "Usage: $0 [-d target_directory] [-p project_name]" >&2
+        exit 1
+        ;;
+    esac
+done
+
+# set default values if not provided
+TARGET_DIR=${TARGET_DIR:-./docs}
+PROJECT_NAME=${PROJECT_NAME:-$(basename $(pwd))}
+
+# functions
+choose_template() {
+    ls $TEMPLATE_SORCE_DIR
+    read -p "${cyan}please choose your template type from the above: ${reset}" TEMPLATE
+    TARGET_TEMPLATE=$TEMPLATE_SORCE_DIR/$TEMPLATE
+
+    if [ ! -d $TARGET_TEMPLATE ]; then
+        echo "${red}$TEMPLATE not exists.${reset}"
+        exit 1
+    fi
+
+    if [ ! -d $TARGET_DIR ]; then
+        echo "${cyan}$TARGET_DIR directory does not exists."
+        echo "creating $TARGET_DIR directory under the current directoty.${reset}"
+        mkdir $TARGET_DIR
+    fi
+
+    cp -r $TARGET_TEMPLATE/* $TARGET_DIR
+
+}
+
+update_document_date() {
+    local new_date=$(date +%Y-%m-%d)
+    find $TARGET_DIR -type f |
+        xargs sed -i "s/^date-modified: \"yyyy-mm-dd\"/date-modified: \"$new_date\"/"
+}
+
+update_document_project_name() {
+    find $TARGET_DIR -type f |
+        xargs sed -i "s/<default-package-name-for-rename>/$PROJECT_NAME/"
+}
+
+# main
+choose_template;
+update_document_date;
+update_document_project_name;

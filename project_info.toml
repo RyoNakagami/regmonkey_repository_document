@@ -1,0 +1,10 @@
+[project]
+name = "regmonkey_repository_document"
+version = "1.2.0"
+description = "document templates for packagge development"
+authors = ["Author Name <author@example.com>"]
+license = "MIT"
+
+[dependencies]
+os = { ubuntu >= "20.04", linux >= "5.4", macos >= "10.15", darwin >= "20.0.0" }
+bash = ">= 5.0"
